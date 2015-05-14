@@ -30,7 +30,7 @@ function echo_unsupported {
 
 function get_os_name {
     if [ -f /etc/os-release ]; then
-        grep -e "^ID=" /etc/os-release | awk -F '=' '{print $2}'
+        grep -e "^ID=" /etc/os-release | awk -F '=' '{print $2}' | sed s/\"//g
     elif [ -f /etc/redhat-release ]; then
         NAME=()
         NAME+=$( rpm -qi centos-release &>/dev/null && echo 'centos' )
@@ -250,6 +250,12 @@ echo_info "OS name is '${OS_NAME}'"
 
 OS_VERSION=$( get_os_version )
 echo_info "OS version is '${OS_VERSION}'"
+
+if [ "${OS_NAME}" == 'amzn' ]; then
+    echo_info 'Amazon Linux is working good with CentOS 6 repos'
+    OS_NAME='centos'
+    OS_VERSION='6'
+fi
 
 case $OS_NAME in
 debian|ubuntu)
