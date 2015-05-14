@@ -34,8 +34,9 @@ function get_os_name {
     elif [ -f /etc/redhat-release ]; then
         NAME=()
         NAME+=$( rpm -qi centos-release &>/dev/null && echo 'centos' )
+        NAME+=$( rpm -qi redhat-release &>/dev/null && echo 'redhat' )
         NAME+=$( rpm -qi redhat-release-server &>/dev/null && echo 'redhat' )
-        if [ $NAME != '' ]; then
+        if [ "${NAME}" != '' ]; then
             echo $NAME
         else
             echo_unsupported
@@ -51,6 +52,7 @@ function get_os_version {
     elif [ -f /etc/redhat-release ]; then
         VERSION=()
         VERSION+=$( rpm -qi centos-release | grep Version | awk '{print $3}' | grep -oP '\d+' )
+        VERSION+=$( rpm -qi redhat-release | grep Version | awk '{print $3}' | grep -oP '\d+' )
         VERSION+=$( rpm -qi redhat-release-server | grep Version | awk '{print $3}' | grep -oP '\d+' )
         case $VERSION in
         5|6)
