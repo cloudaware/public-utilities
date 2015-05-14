@@ -1,6 +1,22 @@
+### Supported operating systems:
+- Debian 7 (wheezy)
+- Debian 8 (jessie)
+- Ubuntu 12.04 (precise)
+- Ubuntu 14.04 (trysty)
+- Centos 5
+- Centos 6
+- Red Hat Enterprise Linux 5
+- Red Hat Enterprise Linux 6
+- Amazon Linux 2015.03
+
 ### Get installer
 ```
 wget --no-check-certificate https://raw.githubusercontent.com/cloudaware/public-utilities/master/ossec-installer/ossec-installer.bash
+```
+**NOTE**: if you have not 'wget' on your server you can install it by the next commands:
+```
+apt-get install wget    # For Debian and Ubuntu
+yum install wget        # For CentOS, Red Hat and Amazon Linux
 ```
 
 ### Change installer mode
