@@ -171,16 +171,18 @@ function set_server_address {
     CONFIG='/var/ossec/etc/ossec.conf'
 
     sed -i "/<client>/,/<\/client>/d" $CONFIG
+    sed -i "/<ossec_config>/a </client>" $CONFIG
     case $ADDRESS_TYPE in
     ip)
         echo_info "Set server IP to '${SERVER_IP}'"
-        sed -i "/<ossec_config>/a <client><server-ip>${SERVER_IP}</server-ip></client>" $CONFIG
+        sed -i "/<ossec_config>/a <server-ip>${SERVER_IP}</server-ip>" $CONFIG
         ;;
     hostname)
         echo_info "Set server hostname to '${SERVER_HOSTNAME}'"
-        sed -i "/<ossec_config>/a <client><server-hostname>${SERVER_HOSTNAME}</server-hostname></client>" $CONFIG
+        sed -i "/<ossec_config>/a <server-hostname>${SERVER_HOSTNAME}</server-hostname>" $CONFIG
         ;;
     esac
+    sed -i "/<ossec_config>/a <client>" $CONFIG
 }
 
 function register_on_server {
