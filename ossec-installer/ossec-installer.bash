@@ -49,17 +49,17 @@ function get_os_version {
     if [ -f /etc/os-release ]; then
         grep -e "^VERSION_ID=" /etc/os-release | awk -F '=' '{print $2}' | sed s/\"//g
     elif [ -f /etc/redhat-release ]; then
-    VERSION=()
-    VERSION+=$( rpm -qi centos-release | grep Version | awk '{print $3}' | grep -oP '\d+' )
-    VERSION+=$( rpm -qi redhat-release-server | grep Version | awk '{print $3}' | grep -oP '\d+' )
-    case $VERSION in
-    5|6)
-        echo $VERSION
-        ;;
-    *)
-        echo_unsupported
-        ;;
-    esac
+        VERSION=()
+        VERSION+=$( rpm -qi centos-release | grep Version | awk '{print $3}' | grep -oP '\d+' )
+        VERSION+=$( rpm -qi redhat-release-server | grep Version | awk '{print $3}' | grep -oP '\d+' )
+        case $VERSION in
+        5|6)
+            echo $VERSION
+            ;;
+        *)
+            echo_unsupported
+            ;;
+        esac
     else
         echo_unsupported
     fi
