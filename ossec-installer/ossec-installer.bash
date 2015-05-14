@@ -193,6 +193,8 @@ function register_on_server {
     if [ -n "${NODE_NAME}" ]; then
         NODE=$NODE_NAME
     else
+        check_wget
+
         INSTANCE_ID=$( wget -q -O - http://169.254.169.254/latest/meta-data/instance-id )
         if [ -n "${INSTANCE_ID}" ]; then
             NODE=$INSTANCE_ID
