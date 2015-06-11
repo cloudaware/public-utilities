@@ -127,7 +127,7 @@ function create_yum_repo {
         'protect = 0'
         'gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY.art.txt'
         '         file:///etc/pki/rpm-gpg/RPM-GPG-KEY.atomicorp.txt'
-        'gpgcheck = 1'
+        'gpgcheck = 0'
     )
     REPO_FILENAME="/etc/yum.repos.d/ossec-${OS_NAME}.repo"
 
