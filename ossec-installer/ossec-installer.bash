@@ -117,25 +117,19 @@ function add_apt_key {
 }
 
 function create_yum_repo {
-    IFS=$'\n'
-    REPO_FILE=(
-        '[atomic]'
-        'name = CentOS / Red Hat Enterprise Linux $releasever - atomicrocketturtle.com'
-        "mirrorlist = http://updates.atomicorp.com/channels/mirrorlist/atomic/centos-${OS_VERSION}-\$basearch"
-        'enabled = 1'
-        'priority = 1'
-        'protect = 0'
-        'gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY.art.txt'
-        '         file:///etc/pki/rpm-gpg/RPM-GPG-KEY.atomicorp.txt'
-        'gpgcheck = 0'
-    )
-    REPO_FILENAME="/etc/yum.repos.d/ossec-${OS_NAME}.repo"
-
     echo_info 'Create YUM repo'
-    echo -n > $REPO_FILENAME
-    for LINE in ${REPO_FILE[@]}; do
-        echo $LINE >> $REPO_FILENAME
-    done
+    REPO_FILENAME="/etc/yum.repos.d/ossec-${OS_NAME}.repo"
+    cat > $REPO_FILENAME << EOF
+[atomic]
+name = CentOS / Red Hat Enterprise Linux $releasever - atomicrocketturtle.com
+mirrorlist = http://updates.atomicorp.com/channels/mirrorlist/atomic/centos-${OS_VERSION}-\$basearch
+enabled = 1
+priority = 1
+protect = 0
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY.art.txt
+         file:///etc/pki/rpm-gpg/RPM-GPG-KEY.atomicorp.txt
+gpgcheck = 0
+EOF
 }
 
 function check_wget {
