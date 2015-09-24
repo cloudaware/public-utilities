@@ -10,6 +10,7 @@ function show_help {
     echo '  --server-ip=IP_ADDRESS      Set server IP address'
     echo '  --server-hostname=HOSTNAME  Set server IP address'
     echo '  --node-name=NODE_NAME       Set node name. Default value: $HOSTNAME or $INSTANCE_ID on AWS'
+    echo '  --docker                    Add Docker support'
     echo '  --help                      Show this message'
 }
 
@@ -231,6 +232,10 @@ for OPT in ${@}; do
         NODE_NAME=${OPT#*=}
         shift
         ;;
+    --docker)
+        DOCKER='true'
+        shift
+        ;;
     --help)
         show_help
         exit
@@ -276,6 +281,30 @@ centos|redhat)
     yum -y install ossec-hids-client 2>/dev/null
     ;;
 esac
+
+function add_docker_support {
+    check_wget
+
+    echo_info 'Install Ruby'
+    case $OS_NAME in
+    debian|ubuntu)
+        case $OS_CODENAME in
+        trusty|wheezy|jessie)
+            RUBY_PACKAGES='ruby'
+        ;;
+        precise)
+            RUBY_PACKAGES='ruby ruby-json'
+        ;;
+        esac
+
+        DEBIAN_FRONTEND='noninteractive' apt-get -y install $RUBY_PACKAGES
+    ;;
+    esac
+}
+
+if [ -n "${DOCKER}" ]; then
+    add_docker_support
+fi
 
 if [ -n "${SERVER_HOSTNAME}" ]; then
     set_server_address hostname

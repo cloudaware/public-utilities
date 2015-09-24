@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'digest'
-require 'json'
 require 'logger'
 require 'net/http'
 require 'socket'
@@ -26,7 +25,7 @@ def get_exec_details(line)
     response.reading_body(socket, request.response_body_permitted?) { }
 
   if response.code == '200'
-    JSON.parse(response.body).to_hash
+    YAML.load(response.body).to_hash
   else
     nil
   end
