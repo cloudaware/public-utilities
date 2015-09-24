@@ -41,6 +41,10 @@ chmod +x ./ossec-installer.bash
 ```
 ./ossec-installer.bash --server-ip=1.2.3.4 --node-name=bar
 ```
+- with Docker support:
+```
+./ossec-installer.bash --docker
+```
 **NOTE**: default node name is $HOSTNAME or $INSTANCE_ID on AWS
 - Ninja mode :)
 ```

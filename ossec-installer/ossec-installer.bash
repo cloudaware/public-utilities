@@ -163,6 +163,31 @@ function add_yum_key {
     done
 }
 
+function add_docker_support {
+    check_wget
+
+    echo_info 'Install Ruby'
+    case $OS_NAME in
+    debian|ubuntu)
+        DEBIAN_FRONTEND='noninteractive' apt-get -y install ruby
+    ;;
+    centos|redhat)
+        yum -y install ruby
+    ;;
+    esac
+
+    echo_info "Get OSSEC Docker plugin"
+    OSSEC_DOCKER_PLUGIN_URL='https://raw.githubusercontent.com/cloudaware/public-utilities/master/ossec-installer/files/ossec-docker-logs.rb'
+    OSSEC_DOCKER_PLUGIN='/var/ossec/bin/ossec-docker-logs.rb'
+    wget $OSSEC_DOCKER_PLUGIN_URL -O $OSSEC_DOCKER_PLUGIN
+    chmod +x $OSSEC_DOCKER_PLUGIN
+
+    echo_info "Update crontab"
+    OSSEC_DOCKER_CRON='/etc/cron.d/ossec-docker-logs'
+    echo '* * * * *    root    /var/ossec/bin/ossec-docker-logs.rb' > $OSSEC_DOCKER_CRON
+    chmod +x $OSSEC_DOCKER_CRON
+}
+
 function set_server_address {
     ADDRESS_TYPE=$1
     CONFIG='/var/ossec/etc/ossec.conf'
@@ -281,26 +306,6 @@ centos|redhat)
     yum -y install ossec-hids-client 2>/dev/null
     ;;
 esac
-
-function add_docker_support {
-    check_wget
-
-    echo_info 'Install Ruby'
-    case $OS_NAME in
-    debian|ubuntu)
-        case $OS_CODENAME in
-        trusty|wheezy|jessie)
-            RUBY_PACKAGES='ruby'
-        ;;
-        precise)
-            RUBY_PACKAGES='ruby ruby-json'
-        ;;
-        esac
-
-        DEBIAN_FRONTEND='noninteractive' apt-get -y install $RUBY_PACKAGES
-    ;;
-    esac
-}
 
 if [ -n "${DOCKER}" ]; then
     add_docker_support
