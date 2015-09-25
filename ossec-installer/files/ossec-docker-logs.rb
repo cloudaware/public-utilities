@@ -6,7 +6,7 @@ require 'net/http'
 require 'socket'
 require 'yaml'
 
-docker_log_files = ['/var/log/docker.log', '/var/log/upstart/docker.log']
+docker_log_files = ['/var/log/docker.log', '/var/log/upstart/docker.log', '/var/log/docker']
 output_log_file_path = '/var/log/ossec-docker-logs.log'
 data_filename = '/tmp/ossec-docker-logs.yml'
 

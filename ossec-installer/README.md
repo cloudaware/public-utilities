@@ -8,6 +8,7 @@
 - Red Hat Enterprise Linux 5
 - Red Hat Enterprise Linux 6
 - Amazon Linux 2015.03
+- Amazon Linux 2015.09
 
 ### Get installer
 ```

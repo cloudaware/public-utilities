@@ -172,10 +172,10 @@ function add_docker_support {
     case $OS_NAME in
     debian|ubuntu)
         DEBIAN_FRONTEND='noninteractive' apt-get -y install ruby
-    ;;
+        ;;
     centos|redhat)
         yum -y install ruby
-    ;;
+        ;;
     esac
 
     echo_info "Get OSSEC Docker plugin"
@@ -196,6 +196,16 @@ function add_docker_support {
         sed -i "/<\/ossec_config>/i <location>\/var\/log\/ossec-docker-logs.log<\/location>" $CONFIG
         sed -i "/<\/ossec_config>/i <\/localfile>" $CONFIG
     fi
+
+    echo_info 'Restart Cron Daemon'
+    case $OS_NAME in
+    debian|ubuntu)
+        /etc/init.d/cron restart
+        ;;
+    centos|redhat)
+        /etc/init.d/crond restart
+        ;;
+    esac
 }
 
 function set_server_address {
