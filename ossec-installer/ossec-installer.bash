@@ -185,9 +185,7 @@ function add_docker_support {
     chmod +x $OSSEC_DOCKER_PLUGIN
 
     echo_info "Update crontab"
-    OSSEC_DOCKER_CRON='/etc/cron.d/ossec-docker-logs'
-    echo '* * * * *    root    /var/ossec/bin/ossec-docker-logs.rb' > $OSSEC_DOCKER_CRON
-    chmod +x $OSSEC_DOCKER_CRON
+    echo '* * * * * root /var/ossec/bin/ossec-docker-logs.rb' > /etc/cron.d/ossec-docker-logs
 
     echo_info "Add Docker monitor"
     if [ -z "$(grep ossec-docker-logs /var/ossec/etc/ossec.conf)" ]; then
@@ -196,16 +194,6 @@ function add_docker_support {
         sed -i "/<\/ossec_config>/i <location>\/var\/log\/ossec-docker-logs.log<\/location>" $CONFIG
         sed -i "/<\/ossec_config>/i <\/localfile>" $CONFIG
     fi
-
-    echo_info 'Restart Cron Daemon'
-    case $OS_NAME in
-    debian|ubuntu)
-        /etc/init.d/cron restart
-        ;;
-    centos|redhat)
-        /etc/init.d/crond restart
-        ;;
-    esac
 }
 
 function set_server_address {
