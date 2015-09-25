@@ -164,6 +164,8 @@ function add_yum_key {
 }
 
 function add_docker_support {
+    CONFIG='/var/ossec/etc/ossec.conf'
+
     check_wget
 
     echo_info 'Install Ruby'
@@ -186,6 +188,14 @@ function add_docker_support {
     OSSEC_DOCKER_CRON='/etc/cron.d/ossec-docker-logs'
     echo '* * * * *    root    /var/ossec/bin/ossec-docker-logs.rb' > $OSSEC_DOCKER_CRON
     chmod +x $OSSEC_DOCKER_CRON
+
+    echo_info "Add Docker monitor"
+    if [ -z "$(grep ossec-docker-logs /var/ossec/etc/ossec.conf)" ]; then
+        sed -i "/<\/ossec_config>/i <localfile>" $CONFIG
+        sed -i "/<\/ossec_config>/i <log_format>syslog<\/log_format>" $CONFIG
+        sed -i "/<\/ossec_config>/i <location>\/var\/log\/ossec-docker-logs.log<\/location>" $CONFIG
+        sed -i "/<\/ossec_config>/i <\/localfile>" $CONFIG
+    fi
 }
 
 function set_server_address {
