@@ -11,6 +11,7 @@ function show_help {
     echo '  --server-hostname=HOSTNAME  Set server IP address'
     echo '  --node-name=NODE_NAME       Set node name. Default value: $HOSTNAME or $INSTANCE_ID on AWS'
     echo '  --docker                    Add Docker support'
+    echo '  --sudo                      Use sudo command'
     echo '  --help                      Show this message'
 }
 
@@ -107,30 +108,30 @@ function create_apt_repo {
     COMPONENT='main'
 
     echo_info 'Create APT repo'
-    echo "deb ${URL} ${OS_CODENAME} ${COMPONENT}" > /etc/apt/sources.list.d/ossec-${OS_CODENAME}.list
+    $SUDO bash -c "echo \"deb ${URL} ${OS_CODENAME} ${COMPONENT}\" > /etc/apt/sources.list.d/ossec-${OS_CODENAME}.list"
 }
 
 function add_apt_key {
     URL='http://ossec.wazuh.com/repos/apt/conf/ossec-key.gpg.key'
 
     echo_info 'Add APT key'
-    apt-key adv --fetch-keys $URL
+    $SUDO bash -c "apt-key adv --fetch-keys $URL"
 }
 
 function create_yum_repo {
     echo_info 'Create YUM repo'
     REPO_FILENAME="/etc/yum.repos.d/ossec-${OS_NAME}.repo"
-    cat > $REPO_FILENAME << EOF
+    $SUDO bash -c "cat > $REPO_FILENAME << EOF
 [atomic]
-name = CentOS / Red Hat Enterprise Linux $releasever - atomicrocketturtle.com
-mirrorlist = http://updates.atomicorp.com/channels/mirrorlist/atomic/centos-${OS_VERSION}-\$basearch
+name = CentOS / Red Hat Enterprise Linux \\\$releasever - atomicrocketturtle.com
+mirrorlist = http://updates.atomicorp.com/channels/mirrorlist/atomic/centos-${OS_VERSION}-\\\$basearch
 enabled = 1
 priority = 1
 protect = 0
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY.art.txt
          file:///etc/pki/rpm-gpg/RPM-GPG-KEY.atomicorp.txt
 gpgcheck = 0
-EOF
+EOF"
 }
 
 function check_wget {
@@ -138,10 +139,10 @@ function check_wget {
         echo_info "Install 'wget'"
         case $OS_NAME in
         debian|ubuntu)
-            apt-get -y install wget
+            $SUDO bash -c "apt-get -y install wget"
             ;;
         centos|redhat)
-            yum -y install wget
+            $SUDO bash -c "yum -y install wget"
             ;;
         esac
     fi
@@ -158,8 +159,8 @@ function add_yum_key {
 
     echo_info 'Add YUM key'
     for KEY in ${KEYS[@]}; do
-        wget "${URL}/${KEY}" -O "/etc/pki/rpm-gpg/${KEY}"
-        rpm --import "/etc/pki/rpm-gpg/${KEY}"
+        $SUDO bash -c "wget \"${URL}/${KEY}\" -O \"/etc/pki/rpm-gpg/${KEY}\""
+        $SUDO bash -c "rpm --import \"/etc/pki/rpm-gpg/${KEY}\""
     done
 }
 
@@ -171,28 +172,28 @@ function add_docker_support {
     echo_info 'Install Ruby'
     case $OS_NAME in
     debian|ubuntu)
-        DEBIAN_FRONTEND='noninteractive' apt-get -y install ruby
+        $SUDO bash -c "DEBIAN_FRONTEND='noninteractive' apt-get -y install ruby"
         ;;
     centos|redhat)
-        yum -y install ruby
+        $SUDO bash -c "yum -y install ruby"
         ;;
     esac
 
     echo_info "Get OSSEC Docker plugin"
     OSSEC_DOCKER_PLUGIN_URL='https://raw.githubusercontent.com/cloudaware/public-utilities/master/ossec-installer/files/ossec-docker-logs.rb'
     OSSEC_DOCKER_PLUGIN='/var/ossec/bin/ossec-docker-logs.rb'
-    wget $OSSEC_DOCKER_PLUGIN_URL -O $OSSEC_DOCKER_PLUGIN
-    chmod +x $OSSEC_DOCKER_PLUGIN
+    $SUDO bash -c "wget $OSSEC_DOCKER_PLUGIN_URL -O $OSSEC_DOCKER_PLUGIN"
+    $SUDO bash -c "chmod +x $OSSEC_DOCKER_PLUGIN"
 
     echo_info "Update crontab"
-    echo '* * * * * root /var/ossec/bin/ossec-docker-logs.rb' > /etc/cron.d/ossec-docker-logs
+    $SUDO bash -c "echo '* * * * * root /var/ossec/bin/ossec-docker-logs.rb' > /etc/cron.d/ossec-docker-logs"
 
     echo_info "Add Docker monitor"
     if [ -z "$(grep ossec-docker-logs /var/ossec/etc/ossec.conf)" ]; then
-        sed -i "/<\/ossec_config>/i <localfile>" $CONFIG
-        sed -i "/<\/ossec_config>/i <log_format>syslog<\/log_format>" $CONFIG
-        sed -i "/<\/ossec_config>/i <location>\/var\/log\/ossec-docker-logs.log<\/location>" $CONFIG
-        sed -i "/<\/ossec_config>/i <\/localfile>" $CONFIG
+        $SUDO bash -c "sed -i \"/<\/ossec_config>/i <localfile>\" $CONFIG"
+        $SUDO bash -c "sed -i \"/<\/ossec_config>/i <log_format>syslog<\/log_format>\" $CONFIG"
+        $SUDO bash -c "sed -i \"/<\/ossec_config>/i <location>\/var\/log\/ossec-docker-logs.log<\/location>\" $CONFIG"
+        $SUDO bash -c "sed -i \"/<\/ossec_config>/i <\/localfile>\" $CONFIG"
     fi
 }
 
@@ -200,19 +201,19 @@ function set_server_address {
     ADDRESS_TYPE=$1
     CONFIG='/var/ossec/etc/ossec.conf'
 
-    sed -i "/<client>/,/<\/client>/d" $CONFIG
-    sed -i "/<ossec_config>/a </client>" $CONFIG
+    $SUDO bash -c "sed -i \"/<client>/,/<\/client>/d\" $CONFIG"
+    $SUDO bash -c "sed -i \"/<ossec_config>/a </client>\" $CONFIG"
     case $ADDRESS_TYPE in
     ip)
         echo_info "Set server IP to '${SERVER_IP}'"
-        sed -i "/<ossec_config>/a <server-ip>${SERVER_IP}</server-ip>" $CONFIG
+        $SUDO bash -c "sed -i \"/<ossec_config>/a <server-ip>${SERVER_IP}</server-ip>\" $CONFIG"
         ;;
     hostname)
         echo_info "Set server hostname to '${SERVER_HOSTNAME}'"
-        sed -i "/<ossec_config>/a <server-hostname>${SERVER_HOSTNAME}</server-hostname>" $CONFIG
+        $SUDO bash -c "sed -i \"/<ossec_config>/a <server-hostname>${SERVER_HOSTNAME}</server-hostname>\" $CONFIG"
         ;;
     esac
-    sed -i "/<ossec_config>/a <client>" $CONFIG
+    $SUDO bash -c "sed -i \"/<ossec_config>/a <client>\" $CONFIG"
 }
 
 function register_on_server {
@@ -232,24 +233,20 @@ function register_on_server {
     fi
 
     echo_info "Register node '$NODE' at server '${SERVER}'"
-    /var/ossec/bin/agent-auth -m $SERVER -A $NODE
+    $SUDO bash -c "/var/ossec/bin/agent-auth -m $SERVER -A $NODE"
 }
 
 function restart_service {
     echo_info 'Restart OSSEC Agent'
     case $OS_NAME in
     debian|ubuntu)
-        /etc/init.d/ossec restart
+        $SUDO bash -c "/etc/init.d/ossec restart"
         ;;
     centos|redhat)
-        /etc/init.d/ossec-hids restart
+        $SUDO bash -c "/etc/init.d/ossec-hids restart"
         ;;
     esac
 }
-
-if [ $( whoami ) != 'root' ]; then
-    echo_error "Run script as 'root'"
-fi
 
 for OPT in ${@}; do
     case $OPT in
@@ -267,6 +264,10 @@ for OPT in ${@}; do
         ;;
     --docker)
         DOCKER='true'
+        shift
+        ;;
+    --sudo)
+        SUDO='sudo'
         shift
         ;;
     --help)
@@ -301,17 +302,17 @@ debian|ubuntu)
     add_apt_key
 
     echo_info 'Update APT cache'
-    apt-get update
+    $SUDO bash -c "apt-get update"
 
     echo_info 'Install OSSEC agent'
-    DEBIAN_FRONTEND='noninteractive' apt-get -y install ossec-hids-agent
+    $SUDO bash -c "DEBIAN_FRONTEND='noninteractive' apt-get -y install ossec-hids-agent"
     ;;
 centos|redhat)
     create_yum_repo
 
     add_yum_key
 
-    yum -y install ossec-hids-client 2>/dev/null
+    $SUDO bash -c "yum -y install ossec-hids-client 2>/dev/null"
     ;;
 esac
 
