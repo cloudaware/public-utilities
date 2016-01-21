@@ -60,3 +60,4 @@ To add the role to all of the nodes you can run:
 ```
 for node in `knife node list`;do knife node run_list add $node 'role[ohai-plugin]';done;
 ```
+Next chef-client will have to apply the changes on the nodes, this will just take some time.
