@@ -1,0 +1,51 @@
+Ohai.plugin(:UpgradablePackages) do
+  provides 'upgradable_packages', 'upgradable_security_packages'
+
+  collect_data(:linux) do
+   if platform_family == 'rhel' or platform_family == 'amazon'
+    begin
+     so = shell_out("yum --security check-update")
+     if so.status == 0
+      so.stdout.lines do |line|
+       res = line.chomp!.match(/(^\d+) package\(s\) needed for security, out of (\d+) available$/)
+       res_str = res unless res.nil?
+       if res_str.nil?
+        upgradable_packages 0
+        upgradable_security_packages 0
+       else
+        begin
+         upgradable_packages res_str[2].to_i
+         upgradable_security_packages res_str[1].to_i
+        rescue => e
+         Ohai::Log.debug("yum output parse error #{e.backtrace}")
+        upgradable_packages 0
+        upgradable_security_packages 0
+        end
+       end
+      end
+     elsif so.status != 100
+      upgradable_packages 0
+      upgradable_security_packages 0
+     else
+      Ohai::Log.debug("Can not get the upgradable packages due yum returning a #{so.status} status")
+     end
+    rescue => e
+     Ohai::Log.debug("Can not get the upgradable packages due to error: #{e.backtrace}")
+    end
+   elsif platform_family == 'debian'
+    begin
+     so = shell_out("/usr/lib/update-notifier/apt-check --human-readable")
+     so.stdout.lines do |line|
+      if (/packages can be updated/i =~ line)
+       upgradable_packages line.match(/^\d+/)[0].to_i
+      end
+      if (/updates are security updates/i =~ line)
+       upgradable_security_packages line.match(/^\d+/)[0].to_i
+      end
+     end
+    rescue => e
+     Ohai::Log.debug("Can not get the upgradable packages due to error: #{e.backtrace}")
+    end
+   end
+  end
+end

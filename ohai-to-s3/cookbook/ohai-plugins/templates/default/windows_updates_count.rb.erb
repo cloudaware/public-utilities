@@ -1,0 +1,27 @@
+Ohai.plugin(:WindowsUpdatesCount) do
+  provides 'windows_updates_optional', 'windows_updates_important'
+
+  collect_data(:windows) do
+   env_path = []
+   env_var = ENV['PATH']
+   unless (env_var.nil?)
+    env_path = env_var.split(';').keep_if { |p| p.match(/PowerShell/) }
+   end
+   ps_path = (env_path.empty?) ? "#{ ENV['SystemRoot'] }\\system32\\WindowsPowerShell\\v1.0\\powershell.exe" : "#{ env_path.first.strip }\powershell.exe"
+   ps_query = [
+    "$UpdImp = $UpdOpt = 0",
+    "$Session = New-Object -ComObject \"Microsoft.Update.Session\"",
+    "$Updates = $Session.CreateUpdateSearcher().Search((\\\"IsHidden=0 and IsInstalled=0 and Type='Software'\\\")).Updates",
+    "foreach ($upd in $Updates) { if ($upd.AutoSelectOnWebSites) { $UpdImp++ } else { $UpdOpt++ } }",
+    "Write-Host $UpdOpt,$UpdImp" ].join(';')
+   ps_cmd = ("#{ ps_path } -NoProfile -NonInteractive -NoLogo -ExecutionPolicy Bypass -Command \"& {#{ ps_query }}\"")
+   ps_response = `#{ ps_cmd }`.strip
+   if ($?.exitstatus == 0)
+    res = ps_response.split(" ", 2)	
+    windows_updates_optional res.first.to_i 
+    windows_updates_important res.last.to_i
+   else
+    Facter.debug("PS execute failed with code #{$?.exitstatus}")
+   end
+  end
+end

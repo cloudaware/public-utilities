@@ -1,0 +1,20 @@
+{
+  "license":          "Private",
+  "recipes": {
+    "encrypted": "Install custom ohai plugins."
+  },
+  "conflicting":      { },
+  "dependencies":     { },
+  "providing":        { "ohai-plugins": [ ] },
+  "long_description": "Install custom ohai plugins.",
+  "description":      "Install custom ohai plugins.",
+  "replacing":        { },
+  "platforms":        { "ubuntu": [ ] },
+  "version":          "1.0.0",
+  "maintainer":       "CloudAware",
+  "recommendations":  { },
+  "name":             "ohai-plugins",
+  "maintainer_email": "vmartin@cloudaware.com",
+  "attributes":       { },
+  "suggestions":      { }
+}
