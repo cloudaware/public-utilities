@@ -24,3 +24,31 @@ chmod +x /usr/sbin/ohai2s3.rb
 @aws_secret="" #This is the AWS Secret Key
 @aws_bucket="" #This is the bucket where to load the ohai facts in json format
 ```
+
+* Deploy the ohai-plugins cookbook using the next commands:
+```
+mkdir /var/chef/cookbooks
+mv public-utilities/ohai-to-s3/cookbook/ohai-plugins /var/chef/cookbooks
+knife cookbook upload ohai-plugins
+```
+
+* Create the ohai-plugin role:
+```
+export EDITOR=vi #any other editor can be selected, like nano for instance
+knife role create ohai-plugin
+```
+Once in the editor, replace everything with the next content and save:
+```
+{
+  "name": "ohai-plugin",
+  "description": "",
+  "json_class": "Chef::Role",
+  "default_attributes": {},
+  "override_attributes": {},
+  "chef_type": "role",
+  "run_list": [ "ohai-plugins" ],
+  "env_run_lists": {
+
+  }
+}
+```
