@@ -52,3 +52,11 @@ Once in the editor, replace everything with the next content and save:
   }
 }
 ```
+* Add the role to the nodes that you need or to all nodes using your web interface or using the next command:
+```
+knife node run_list add $NODE_NAME 'role[ohai-plugin]' #Where $NODE_NAME is the name of the actual node
+```
+To add the role to all of the nodes you can run:
+```
+for node in `knife node list`;do knife node run_list add $node 'role[ohai-plugin]';done;
+```
