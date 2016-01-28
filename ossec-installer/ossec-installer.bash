@@ -189,7 +189,7 @@ function add_docker_support {
     $SUDO bash -c "echo '* * * * * root /var/ossec/bin/ossec-docker-logs.rb' > /etc/cron.d/ossec-docker-logs"
 
     echo_info "Add Docker monitor"
-    if [ -z "$(grep ossec-docker-logs /var/ossec/etc/ossec.conf)" ]; then
+    if [ -z "$($SUDO bash -c 'grep ossec-docker-logs /var/ossec/etc/ossec.conf')" ]; then
         $SUDO bash -c "sed -i \"/<\/ossec_config>/i <localfile>\" $CONFIG"
         $SUDO bash -c "sed -i \"/<\/ossec_config>/i <log_format>syslog<\/log_format>\" $CONFIG"
         $SUDO bash -c "sed -i \"/<\/ossec_config>/i <location>\/var\/log\/ossec-docker-logs.log<\/location>\" $CONFIG"
