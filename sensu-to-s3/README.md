@@ -1,4 +1,4 @@
-### Installation mysql-backups-to-s3
+### Installation sensu-to-s3
 - You need to have **'s3cmd'** installed and configured on a server:
 ```sh
 # apt-get install s3cmd
