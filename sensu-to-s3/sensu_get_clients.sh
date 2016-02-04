@@ -31,4 +31,6 @@ s3cmd put /tmp/$name.json s3://$s3_bucket/$s3_bucket_prefix/
 else
 s3cmd sync /tmp/$name.json s3://$s3_bucket/
 fi
+rm -f /tmp/$name.json
 done
+rm -f /tmp/clients_list.json
