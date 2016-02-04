@@ -12,7 +12,7 @@ or
 - Also you need to have installed **'jq'** programm:
 ```sh
 # apt-get install jq
-on Red Hat similar systems you need to have enabled EPEL repository and after that you can install **'jq'**
+On Red Hat systems you need to have EPEL repository enabled and after that you will be able to install 'jq'
 # yum install jq
 ```
 
