@@ -9,6 +9,13 @@ or
 # s3cmd --configure
 ```
 
+- Also you need to have installed **'jq'** programm:
+```sh
+# apt-get install jq
+on Red Hat similar systems you need to have enabled EPEL repository and after that you can install **'jq'**
+# yum install jq
+```
+
 - edit the following variables below for your needs in the file **'sensu_get_clients.sh'**
  - 'sensu_server' - IP address or DNS name of sensu server;
  - 'api_port' - Sensu API port;
