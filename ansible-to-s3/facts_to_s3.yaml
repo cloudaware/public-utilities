@@ -1,0 +1,16 @@
+#this will dump facts for each host into a separate file and put to S3 bucket
+
+- hosts: linux-servers
+
+  tasks:
+  - name: Fetch the ec2_facts for the server
+    action: ec2_facts
+
+  - name: dump facts to file
+    local_action: copy content='{{ hostvars[inventory_hostname] | to_nice_json}}' dest="/tmp/{{ ansible_ec2_instance_id }}.json"
+
+  - name: upload facts into s3
+    local_action: command /usr/local/pre_s3.sh {{ ansible_ec2_instance_id }}
+
+  - name: upload facts into s3
+    local_action: s3 bucket=alebedenko object=/ansiblefacts/{{ ansible_ec2_instance_id }}.json src="/tmp/{{ ansible_ec2_instance_id }}.json" mode=put overwrite=True
