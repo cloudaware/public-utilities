@@ -13,4 +13,4 @@
     local_action: command /usr/local/pre_s3.sh {{ ansible_ec2_instance_id }}
 
   - name: upload facts into s3
-    local_action: s3 bucket=alebedenko object=/ansiblefacts/{{ ansible_ec2_instance_id }}.json src="/tmp/{{ ansible_ec2_instance_id }}.json" mode=put overwrite=True
+    local_action: s3 bucket=some-bucket object=/ansiblefacts/{{ ansible_ec2_instance_id }}.json src="/tmp/{{ ansible_ec2_instance_id }}.json" mode=put overwrite=True
