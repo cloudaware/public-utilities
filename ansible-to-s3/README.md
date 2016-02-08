@@ -16,3 +16,5 @@ aws_secret_access_key = YOURSECRETKEY
 ```
 
 - Put playbook file 'facts_to_s3.yaml' to your '/etc/ansible' directory.
+- Put 'ansible_to_s3' file to the '/etc/cron.d' directory.
+Note: You should to change user from which run cron job in the file '/etc/cron.d/ansible_to_s3', we use 'root' user for example.
