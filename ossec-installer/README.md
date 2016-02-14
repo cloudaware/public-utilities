@@ -1,4 +1,4 @@
-**NOTE**: OSSEC uses ports UDP:1514 and TCP:1515. Ensure that firewall rules for agent nodes allow outbound trafic on that ports.
+**NOTE**: OSSEC uses ports UDP:1514 and TCP:1515. Ensure that firewall rules for agent nodes allow outbound trafic on these ports.
 
 ### Supported operating systems:
 - Debian 7 (wheezy)
