@@ -31,9 +31,7 @@ function echo_unsupported {
 }
 
 function get_os_name {
-    if [ -f /etc/os-release ]; then
-        grep -e "^ID=" /etc/os-release | awk -F '=' '{print $2}' | sed s/\"//g
-    elif [ -f /etc/redhat-release ]; then
+    if [ -f /etc/redhat-release ]; then
         NAME=()
         NAME+=$( rpm -qi centos-release &>/dev/null && echo 'centos' )
         NAME+=$( rpm -qi redhat-release &>/dev/null && echo 'redhat' )
@@ -43,15 +41,15 @@ function get_os_name {
         else
             echo_unsupported
         fi
+    elif [ -f /etc/os-release ]; then
+        grep -e "^ID=" /etc/os-release | awk -F '=' '{print $2}' | sed s/\"//g
     else
         echo_unsupported
     fi
 }
 
 function get_os_version {
-    if [ -f /etc/os-release ]; then
-        grep -e "^VERSION_ID=" /etc/os-release | awk -F '=' '{print $2}' | sed s/\"//g
-    elif [ -f /etc/redhat-release ]; then
+    if [ -f /etc/redhat-release ]; then
         VERSION=()
         VERSION+=$( rpm -qi centos-release | grep Version | awk '{print $3}' | grep -oP '\d+' )
         VERSION+=$( rpm -qi redhat-release | grep Version | awk '{print $3}' | grep -oP '\d+' )
@@ -64,6 +62,8 @@ function get_os_version {
             echo_unsupported
             ;;
         esac
+    elif [ -f /etc/os-release ]; then
+        grep -e "^VERSION_ID=" /etc/os-release | awk -F '=' '{print $2}' | sed s/\"//g
     else
         echo_unsupported
     fi
@@ -313,6 +313,9 @@ centos|redhat)
     add_yum_key
 
     $SUDO bash -c "yum -y install ossec-hids-client 2>/dev/null"
+    ;;
+*)
+    echo_unsupported
     ;;
 esac
 
