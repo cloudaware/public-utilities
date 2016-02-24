@@ -7,8 +7,10 @@
 - Ubuntu 14.04 (trysty)
 - Centos 5
 - Centos 6
+- Centos 7
 - Red Hat Enterprise Linux 5
 - Red Hat Enterprise Linux 6
+- Red Hat Enterprise Linux 7
 - Amazon Linux 2015.03
 - Amazon Linux 2015.09
 
