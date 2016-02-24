@@ -51,11 +51,11 @@ function get_os_name {
 function get_os_version {
     if [ -f /etc/redhat-release ]; then
         VERSION=()
-        VERSION+=$( rpm -qi centos-release | grep Version | awk '{print $3}' | grep -oP '\d+' )
-        VERSION+=$( rpm -qi redhat-release | grep Version | awk '{print $3}' | grep -oP '\d+' )
-        VERSION+=$( rpm -qi redhat-release-server | grep Version | awk '{print $3}' | grep -oP '\d+' )
+        VERSION+=$( rpm -qi centos-release | grep Version | awk '{print $3}' | grep -oP '^\d+' )
+        VERSION+=$( rpm -qi redhat-release | grep Version | awk '{print $3}' | grep -oP '^\d+' )
+        VERSION+=$( rpm -qi redhat-release-server | grep Version | awk '{print $3}' | grep -oP '^\d+' )
         case $VERSION in
-        5|6)
+        5|6|7)
             echo $VERSION
             ;;
         *)
