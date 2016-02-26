@@ -9,8 +9,11 @@
   - name: dump facts to file
     local_action: copy content='{{ hostvars[inventory_hostname] | to_nice_json}}' dest="/tmp/{{ ansible_ec2_instance_id }}.json"
 
-  - name: upload facts into s3
-    local_action: command /usr/local/pre_s3.sh {{ ansible_ec2_instance_id }}
+  - name: remove not neccesary fields
+    local_action: lineinfile dest=/tmp/{{ ansible_ec2_instance_id }}.json regexp='ec2_network_interfaces_macs' state=absent
+
+  - name: replace some fields
+    local_action: replace dest=/tmp/{{ ansible_ec2_instance_id }}.json regexp='^(.*)ansible_ec2(.*)$' replace='\1ec2\2'
 
   - name: upload facts into s3
     local_action: s3 bucket=some-bucket object=/ansiblefacts/{{ ansible_ec2_instance_id }}.json src="/tmp/{{ ansible_ec2_instance_id }}.json" mode=put overwrite=True

@@ -10,11 +10,6 @@ aws_access_key_id = YOURACCESSKEY
 aws_secret_access_key = YOURSECRETKEY
 ```
 
-- Put 'pre_s3.sh' file to the '/usr/local' directory and make it file executable.
-```sh
-# chmod +x /usr/local/pre_s3.sh
-```
-
 - Put playbook file 'facts_to_s3.yaml' to your '/etc/ansible' directory.
 In this file you need to specify your hosts, for example we use 'linux servers' group
 ```sh
