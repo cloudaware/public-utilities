@@ -1,6 +1,6 @@
 #this will dump facts for each host into a separate file and put to S3 bucket
 
-- hosts: tag_Name_Frank
+- hosts: linux-servers
 
   tasks:
   - name: Fetch the ec2_facts for the server
