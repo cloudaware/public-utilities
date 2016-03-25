@@ -11,7 +11,7 @@ aws_access_key_id = YOURACCESSKEY
 aws_secret_access_key = YOURSECRETKEY
 ```
 
-- Put playbook file 'facts_to_s3.yaml' to your '/etc/ansible' directory.
+- Put playbook file 'facts_to_s3.yml' to your '/etc/ansible' directory.
 In this file you need to specify your hosts, for example we use servers with Name tags 'ansible_server'
 ```sh
  - hosts: tag_Name_ansible_server
