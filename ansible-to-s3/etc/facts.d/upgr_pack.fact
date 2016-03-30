@@ -1,0 +1,17 @@
+#!/bin/bash
+#Get upgradable packages count for Debian/RH systems and create ansible facts.
+
+if [ -e "/usr/lib/update-notifier/apt-check" ]; then
+upgradable_packages=`/usr/lib/update-notifier/apt-check --human-readable|grep 'packages can be updated'|awk '{print $1}'`
+upgradable_security_packages=`/usr/lib/update-notifier/apt-check --human-readable|grep 'updates are security updates'|awk '{print $1}'`
+else
+upgradable_security_packages=`yum --security check-update|grep 'package(s) needed for security'|awk '{print $1}'`
+upgradable_packages=`yum --security check-update|grep 'package(s) needed for security'|awk '{print $8}'`
+fi
+
+cat <<EOF
+{
+    "all_pack" : "$upgradable_packages",
+    "sec_pack" : "$upgradable_security_packages"
+}
+EOF
