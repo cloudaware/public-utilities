@@ -24,9 +24,6 @@
   - name: copy main file
     local_action: copy src=/etc/ansible/cloudaware_repos/ansible-to-s3/main.yml dest=/etc/ansible
 
-  - name: copy new facts_to_s3.yml file
-    local_action: copy src=/etc/ansible/cloudaware_repos/ansible-to-s3/facts_to_s3.yml dest=/etc/ansible
-
   - name: check attributes for custom  facts files
     local_action: file path=/etc/ansible/facts.d/upgr_pack.fact  mode=0755
 
