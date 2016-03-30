@@ -22,7 +22,7 @@ Also you should to specify 'cron_user' and 's3_bucket' variables in this file.
     cron_user: root
     s3_bucket: alebedenko
 ```
-cron_user will be used in your cron job for periodically update your facts on s3 bucket. Also your s3 bucket should contain 'ansible-facts' directory.
+cron_user will be used in your cron job for periodically update your facts on s3 bucket. Also your s3 bucket should contain 'ansible-facts' directory. Please note that 'cron_user' should have access to '.boto' file with credentials to your s3 bucket.
 
 - After that you will be able to run your playbook by the following command
 ```
