@@ -12,19 +12,19 @@ aws_access_key_id = YOUR_ACCESS_KEY
 aws_secret_access_key = YOUR_SECRET_KEY
 ```
 
-- Put playbook file 'facts_to_s3.yml' to your '/etc/ansible' directory.
+- Put the 'facts_to_s3.yml' file to your '/etc/ansible' directory.
 In this file you need to specify your hosts, for example we use servers with Name tags 'ansible_server'
 ```sh
     - hosts: tag_Name_ansible_server
 ```
-Also you should to specify your bucket name.
+Also you should to specify 'cron_user' and 's3_bucket' variables in this file.
 ```sh
-    local_action: s3 bucket=some-bucket
+    cron_user: root
+    s3_bucket: alebedenko
 ```
+cron_user will be used in your cron job for periodically update your facts on s3 bucket. Also your s3 bucket should contain 'ansible-facts' directory.
 
-- Copy 'pre_s3.py' script to your '/usr/local' directory and make it executable.
+- After that you will be able to run your playbook by the following command
 ```
-    chmod +x /usr/local/pre_s3.py
+ansible-playbook facts_to_s3.yml
 ```
-- To run playbook periodically you should put 'ansible_to_s3' file to the '/etc/cron.d' directory.
-Note: You should to change user from which run cron job in the '/etc/cron.d/ansible_to_s3' file, we use 'root' user for example.
