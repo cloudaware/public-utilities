@@ -20,7 +20,7 @@ In this file you need to specify your hosts, for example we use servers with Nam
 Also you should to specify 'cron_user' and 's3_bucket' variables in this file.
 ```sh
     cron_user: root
-    s3_bucket: alebedenko
+    s3_bucket: some-bucket
 ```
 cron_user will be used in your cron job for periodically update your facts on s3 bucket. Also your s3 bucket should contain 'ansible-facts' directory. Please note that 'cron_user' should have access to '.boto' file with credentials to your s3 bucket.
 
