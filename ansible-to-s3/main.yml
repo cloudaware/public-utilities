@@ -14,6 +14,9 @@
 - name: dump facts to file
   local_action: copy content='{{ hostvars[inventory_hostname] | to_nice_json }}' dest="/tmp/{{ ansible_ec2_instance_id }}.json"
 
+- name: remove long ec2 facts
+  local_action: lineinfile dest=/tmp/{{ ansible_ec2_instance_id }}.json regexp='ansible_ec2_metrics_' state=absent
+
 - name: remove unnecessary fields
   local_action: command /usr/local/pre_s3.py /tmp/{{ ansible_ec2_instance_id }}.json
 
