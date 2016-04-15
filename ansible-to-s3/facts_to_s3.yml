@@ -30,4 +30,11 @@
   - name: check attributes for pre_s3.py file
     local_action: file path=/usr/local/pre_s3.py  mode=0755
 
+  - name: check attributes for pre_s3.sh file
+    local_action: file path=/usr/local/pre_s3.sh  mode=0755
+
   - include: main.yml
+    when: ec2_id is defined
+
+  - include: main_noec2.yml
+    when: ec2_id is not defined
