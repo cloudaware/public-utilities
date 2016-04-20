@@ -2,7 +2,7 @@
 - Requirements:
  - python >= 2.6
  - python-boto
- - AWS EC2 External Inventory Script
+ - AWS EC2 External Inventory Script or ansible hosts file
 
 - How to install and configure AWS EC2 External Inventory Script you can find at the following link: http://docs.ansible.com/ansible/intro_dynamic_inventory.html#example-aws-ec2-external-inventory-script
 - You should to create a '~/.boto' file with these contents in the home directory of the user under which you will run a playbook:
@@ -22,7 +22,11 @@ Also you should to specify 'cron_user' and 's3_bucket' variables in this file.
     cron_user: root
     s3_bucket: some-bucket
 ```
-cron_user will be used in your cron job for periodically update your facts on s3 bucket. Also your s3 bucket should contain 'ansible-facts' directory. Please note that 'cron_user' should have access to '.boto' file with credentials to your s3 bucket.
+cron_user will be used in your cron job for periodically update your facts on s3 bucket. Also your s3 bucket should contain 'ansible-facts' directory. Please note that 'cron_user' should have access to '.boto' file with credentials to your s3 bucket. 
+Note: In case you're using the playbook for windows the next line (become: yes) needs to be commented out.
+```sh
+#become: yes
+```
 
 - After that you will be able to run your playbook by the following command
 ```
