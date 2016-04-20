@@ -1,6 +1,6 @@
 ---
 - name: checking package for update
-  script: ../files/windows_facts.ps1
+  script: /etc/ansible/roles/windows_facts/files/windows_facts.ps1
   register: local_facts
 
 - set_fact:
