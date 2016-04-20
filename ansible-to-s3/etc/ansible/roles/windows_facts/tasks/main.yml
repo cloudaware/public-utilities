@@ -1,0 +1,21 @@
+---
+- name: checking package for update
+  script: ../files/windows_facts.ps1
+  register: local_facts
+
+- set_fact:
+    all_pack="{{ local_facts.stdout_lines[0] }}"
+    sec_pack="{{ local_facts.stdout_lines[1] }}"
+    ansible_password="********"
+
+- name: dump facts to file
+  local_action: copy content='{{ hostvars[inventory_hostname] | to_nice_json}}' dest="/tmp/{{ ec2_id }}.json"
+  when: ec2_id is defined
+
+- name: remove unnecessary fields
+  local_action: command /usr/local/pre_s3.py /tmp/{{ ec2_id }}.json
+  when: ec2_id is defined
+
+- name: upload facts into s3
+  local_action: s3 bucket={{ s3_bucket }} object=/ansible-facts/{{ ec2_id }}.json src="/tmp/{{ ec2_id }}.json" mode=put overwrite=True
+  when: ec2_id is defined

@@ -21,12 +21,6 @@
   - name: copy files to /etc directory
     local_action: copy src=/etc/ansible/cloudaware_repos/ansible-to-s3/etc dest=/
 
-  - name: copy main file
-    local_action: copy src=/etc/ansible/cloudaware_repos/ansible-to-s3/main.yml dest=/etc/ansible
-
-  - name: copy main file for ec2_facts
-    local_action: copy src=/etc/ansible/cloudaware_repos/ansible-to-s3/main_noec2.yml dest=/etc/ansible
-
   - name: check attributes for custom  facts files
     local_action: file path=/etc/ansible/facts.d/upgr_pack.fact  mode=0755
 
@@ -36,8 +30,11 @@
   - name: check attributes for pre_s3.sh file
     local_action: file path=/usr/local/pre_s3.sh  mode=0755
 
-  - include: main.yml
-    when: ec2_id is defined
+  roles:
+    - role: linux_facts
+      tags: linux_facts
+      when: ansible_system == 'Linux'
 
-  - include: main_noec2.yml
-    when: ec2_id is not defined
+    - role: windows_facts
+      tags: windows_facts
+      when: ansible_os_family == 'Windows'

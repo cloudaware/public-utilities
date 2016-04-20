@@ -1,8 +1,10 @@
 ---
 - name: Fetch the ec2_facts for the server
   action: ec2_facts
+  when: ec2_id is not defined
 
 - set_fact: ansible_ec2_metrics_vhostmd="null"
+  when: ec2_id is not defined
 
 - name: ensure custom facts directory exists
   file: path=/etc/ansible/facts.d recurse=yes state=directory mode=0755
@@ -14,15 +16,31 @@
   setup: filter=ansible_local
 
 - name: dump facts to file
+  local_action: copy content='{{ hostvars[inventory_hostname] | to_nice_json }}' dest="/tmp/{{ ec2_id }}.json"
+  when: ec2_id is defined
+
+- name: remove unnecessary fields
+  local_action: command /usr/local/pre_s3.py /tmp/{{ ec2_id }}.json
+  when: ec2_id is defined
+
+- name: upload facts into s3
+  local_action: s3 bucket={{ s3_bucket }} object=/ansible-facts/{{ ec2_id }}.json src="/tmp/{{ ec2_id }}.json" mode=put overwrite=True
+  when: ec2_id is defined
+
+- name: dump facts to file
   local_action: copy content='{{ hostvars[inventory_hostname] | to_nice_json }}' dest="/tmp/{{ ansible_ec2_instance_id }}.json"
+  when: ec2_id is not defined
 
 - command: /usr/local/pre_s3.sh /tmp/{{ ansible_ec2_instance_id }}.json
+  when: ec2_id is not defined
 
 - name: remove unnecessary fields
   local_action: command /usr/local/pre_s3.py /tmp/{{ ansible_ec2_instance_id }}.json
+  when: ec2_id is not defined
 
 - name: upload facts into s3
   local_action: s3 bucket={{ s3_bucket }} object=/ansible-facts/{{ ansible_ec2_instance_id }}.json src="/tmp/{{ ansible_ec2_instance_id }}.json" mode=put overwrite=True
+  when: ec2_id is not defined
 
 - name: create cron job
   local_action: template src=templates/ansible_to_s3.j2 dest=/etc/cron.d/ansible_to_s3 mode=0644
