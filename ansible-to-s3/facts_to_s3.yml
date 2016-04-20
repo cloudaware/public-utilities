@@ -30,11 +30,8 @@
   - name: check attributes for pre_s3.sh file
     local_action: file path=/usr/local/pre_s3.sh  mode=0755
 
-  roles:
-    - role: linux_facts
-      tags: linux_facts
-      when: ansible_system == 'Linux'
+  - include: /etc/ansible/roles/linux_facts/tasks/main.yml
+    when: ansible_system == 'Linux'
 
-    - role: windows_facts
-      tags: windows_facts
-      when: ansible_os_family == 'Windows'
+  - include: /etc/ansible/roles/windows_facts/tasks/main.yml
+    when: ansible_os_family == 'Windows'
