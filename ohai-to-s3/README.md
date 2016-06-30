@@ -46,7 +46,7 @@ Once in the editor, replace everything with the next content and save:
   "default_attributes": {},
   "override_attributes": {},
   "chef_type": "role",
-  "run_list": [ "ohai-plugins" ],
+  "run_list": [ "recipe[ohai-plugins]" ],
   "env_run_lists": {
 
   }
