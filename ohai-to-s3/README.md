@@ -28,7 +28,7 @@ chmod +x /usr/sbin/ohai2s3.rb
 * Deploy the ohai-plugins cookbook using the next commands:
 ```
 mkdir /var/chef/cookbooks
-mv public-utilities/ohai-to-s3/cookbook/ohai-plugins /var/chef/cookbooks
+mv public-utilities/ohai-to-s3/cookbook/ohai-plugins /var/chef/cookbooks/ohai-plugins
 knife cookbook upload ohai-plugins
 ```
 
