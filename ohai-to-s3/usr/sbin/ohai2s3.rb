@@ -37,7 +37,7 @@ def put2s3()
   @nodes.each_key do |node_key|
    key = @nodes[node_key]["automatic"]["ec2"]["instance_id"]
    if key
-    resp = s3.put_object(:bucket => @aws_bucket.chomp('/'), :key => "#{key}.json", :body => @nodes[node_key].to_s)
+    resp = s3.put_object(:bucket => @aws_bucket.chomp('/'), :key => "#{key}.json", :body => @nodes[node_key].to_json.to_s)
     @log.info "Facts for instance #{ key } uploaded successfully" if resp.successful?
    end
   end
