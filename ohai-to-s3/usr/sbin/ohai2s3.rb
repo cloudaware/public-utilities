@@ -35,7 +35,9 @@ def put2s3()
   options[:secret_access_key] = @aws_secret if @aws_secret
   s3 = Aws::S3::Client.new(options)
   @nodes.each_key do |node_key|
-   key = @nodes[node_key]["automatic"]["ec2"]["instance_id"]
+   if @nodes[node_key]["automatic"]["ec2"] != nil
+    key = @nodes[node_key]["automatic"]["ec2"]["instance_id"]
+   end
    if key
     resp = s3.put_object(:bucket => @aws_bucket.chomp('/'), :key => "#{key}.json", :body => @nodes[node_key].to_json.to_s)
     @log.info "Facts for instance #{ key } uploaded successfully" if resp.successful?
