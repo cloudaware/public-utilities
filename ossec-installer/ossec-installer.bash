@@ -92,6 +92,9 @@ function get_os_codename {
         14.04)
             echo 'trusty'
             ;;
+        16.04)
+            echo 'xenial'
+            ;;
         *)
             echo_unsupported
             ;;

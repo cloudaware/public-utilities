@@ -5,6 +5,7 @@
 - Debian 8 (jessie)
 - Ubuntu 12.04 (precise)
 - Ubuntu 14.04 (trysty)
+- Ubuntu 16.04 (xenial)
 - Centos 5
 - Centos 6
 - Centos 7
