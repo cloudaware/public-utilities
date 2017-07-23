@@ -21,16 +21,16 @@ class cloudaware::facts2ca (
     path    => '/etc/puppetlabs/mcollective/facts2ca.yaml',
     owner   => 'root',
     group   => 'root',
-    mode    => 0640,
+    mode    => '0640',
     backup  => false,
     content => template('cloudaware/facts2ca.yaml.erb'),
   }
 
   file { 'facts2ca::application':
-    path   => '/opt/puppet/libexec/mcollective/mcollective/application/facts2ca.rb',
+    path   => '/opt/puppetlabs/mcollective/plugins/mcollective/application/facts2ca.rb',
     owner  => 'root',
     group  => 'root',
-    mode   => 0644,
+    mode   => '0644',
     backup => false,
     source => 'puppet:///modules/cloudaware/mcollective/facts2ca.rb',
   }
@@ -40,7 +40,7 @@ class cloudaware::facts2ca (
     ensure  => present,
     owner   => 'root',
     group   => 'root',
-    mode    => 0644,
+    mode    => '0644',
     backup  => false,
     source  => 'puppet:///modules/cloudaware/cron.d/facts2ca',
     require => File[

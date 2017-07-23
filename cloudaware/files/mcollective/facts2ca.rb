@@ -48,7 +48,7 @@ class MCollective::Application::Facts2ca<MCollective::Application
   end
 
   def main
-    @log = Logger.new('/var/log/pe-mcollective/facts2ca.log')
+    @log = Logger.new('/var/log/puppetlabs/facts2ca.log')
     @log.level = Logger::INFO
 
     @config = load_yaml_config('/etc/puppetlabs/mcollective/facts2ca.yaml')
@@ -66,7 +66,7 @@ class MCollective::Application::Facts2ca<MCollective::Application
     begin
       s3 = Aws::S3::Client.new(options)
       data.compact.each do |node_data|
-        key = node_data['ec2_instance_id']
+        key = node_data['ec2_metadata']['instance-id']
         if key
           resp = s3.put_object(:bucket => @config['s3_bucket'].chomp('/'), :key => "#{ key }.json", :body => node_data.to_json)
           @log.info "Facts of the instance #{ key } uploaded" if resp.successful?
