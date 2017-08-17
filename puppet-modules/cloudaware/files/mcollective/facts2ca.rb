@@ -49,6 +49,12 @@ class MCollective::Application::Facts2ca < MCollective::Application
     @log = Logger.new('/var/log/puppetlabs/facts2ca.log')
     @log.level = Logger::INFO
 
+    lock_file = '/tmp/facts2ca.lock'
+    unless File.new(lock_file, 'w').flock(File::LOCK_NB | File::LOCK_EX)
+      @log.warn "File #{lock_file} is locked by another process. Exit"
+      exit 1
+    end
+
     config = load_yaml_config('/etc/puppetlabs/mcollective/facts2ca.yaml')
 
     data = []
