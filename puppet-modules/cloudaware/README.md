@@ -1,5 +1,6 @@
-facts2ca
----
+## facts2ca
+
+### Install by Puppet
 
 1. Put Puppet module `cloudaware` to the `/etc/puppetlabs/code/environments/production/modules/`.
 2. Add new class `cloudaware::facts2ca` in the Puppet Dashboard.
@@ -14,3 +15,19 @@ facts2ca_s3_region
 facts2ca_access_key, facts2ca_secret_key
   Access credentials for IAM user. By default module uses the EC2 IAM Role.
 ```
+
+### Uninstall
+
+1. Remove cronjob file:
+    ```
+    rm /etc/cron.d/facts2ca
+    ```
+2. Remove `facts2ca` application and configuration files:
+    ```
+    rm /opt/puppetlabs/mcollective/plugins/mcollective/application/facts2ca.rb
+    rm /etc/puppetlabs/mcollective/facts2ca.yaml
+    ```
+3. Uninstall Rubygem `aws-sdk`:
+    ```
+    /opt/puppetlabs/puppet/bin/gem uninstall aws-sdk -v 2.0.33
+    ```
