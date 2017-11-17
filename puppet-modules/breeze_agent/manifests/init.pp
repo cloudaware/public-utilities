@@ -31,9 +31,6 @@ class breeze_agent (
         path   => "C:\\breeze-agent.exe",
         ensure => present,
         source => "puppet:///modules/breeze_agent/${breeze_package_windows}",
-        owner  => 'Administrator',
-        group  => 'Administrators',
-        mode   => '0777',
       }
 
       exec { "install-breeze":
