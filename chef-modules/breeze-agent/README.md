@@ -5,7 +5,7 @@ breeze-agent
 ```
 git clone https://github.com/cloudaware/public-utilities.git
 ```
-* Put your breeze agent installation files to the 'public-utilities/chef-modules/breeze-agent/files' directory. Note that your files should be called 'breeze-agent-linux.tgz' and 'breeze-agent-windows.exe'.
+* Put your breeze agent installation files to the `public-utilities/chef-modules/breeze-agent/files` directory. Note that your files should be called 'breeze-agent-linux.tgz' and 'breeze-agent-windows.exe'.
 
 * Copy breeze-agent cookbook to your cookbook directory and upload it to the server:
 ```
